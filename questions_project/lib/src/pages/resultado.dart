@@ -8,14 +8,16 @@ class Resultado extends StatelessWidget {
       {super.key});
 
   String get fraseResultado {
-    if (pontuacao < 8) {
-      return 'Parabéns';
-    } else if (pontuacao < 12) {
-      return 'Você é bom!';
-    } else if (pontuacao < 16) {
-      return 'Impressionante!';
+    if (pontuacao == 10) {
+      return 'Parabéns! \n Número de acertos: $pontuacao';
+    } else if (pontuacao < 10 && pontuacao >= 7) {
+      return 'Você é bom! \n Número de acertos: $pontuacao';
+    } else if (pontuacao < 7 && pontuacao >= 5) {
+      return 'Razoável! \n Número de acertos: $pontuacao';
+    } else if (pontuacao < 5 && pontuacao >= 1) {
+      return 'Precisa Melhorar! \n Número de acertos: $pontuacao';
     } else {
-      return 'Nível Jedi!';
+      return 'Não foi dessa vez! \n Número de acertos: $pontuacao';
     }
   }
 
@@ -28,16 +30,22 @@ class Resultado extends StatelessWidget {
           child: Text(
             fraseResultado,
             style: const TextStyle(
-              fontSize: 28,
+              fontSize: 20,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
-        TextButton(
+        const SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
           onPressed: quandoReiniciarQuestionario,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
           child: const Text(
             'Reiniciar?',
             style: TextStyle(
               fontSize: 18,
+              color: Color.fromARGB(255, 73, 73, 73),
             ),
           ),
         ),
