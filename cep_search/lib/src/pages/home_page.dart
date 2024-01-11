@@ -1,9 +1,6 @@
-import 'dart:convert';
-
-import 'package:cep_search/src/services/cep_service.dart';
+import 'package:cep_search/src/pages/busca_cep.dart';
+import 'package:cep_search/src/pages/formulario_cep.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,178 +10,53 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _searchField = TextEditingController();
-
-  final service = CepService();
-  Map<String, dynamic> data = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  _searchCEP() async {
-    try {
-      Response response;
-      response = await service.getCEP(_searchField.text);
-      String jsonDataString = response.body.toString();
-      data = jsonDecode(jsonDataString);
-    } catch (e) {
-      data = {};
-    }
-  }
-
+  int currentPageIndex = 0;
+  final form = FormularioCep();
+  final search = BuscaCep();
   @override
   Widget build(BuildContext context) {
+    final altura = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: AppBar(
-          title: TextField(
-            onEditingComplete: () {
-              _searchCEP();
-
-              FocusScope.of(context).unfocus();
-            },
-            controller: _searchField,
-            decoration: const InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              labelText: 'Digite o Cep',
+      appBar: AppBar(
+        title: const Text('Cep Handler'),
+      ),
+      bottomNavigationBar: NavigationBar(
+        height: altura * 0.1,
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        selectedIndex: currentPageIndex,
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.format_list_bulleted_rounded),
+            label: 'Formulário',
+            selectedIcon: Icon(
+              Icons.format_list_bulleted_rounded,
+              color: Colors.blue,
             ),
           ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                _searchCEP();
-              },
-              icon: const Icon(
-                Icons.search,
-              ),
-            )
-          ],
-        ),
-        body: Container(
-          margin: const EdgeInsets.all(10),
-          child: Center(
-            child: Card(
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Cep:  ',
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: data['cep'].toString(),
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const TextSpan(text: '\n'),
-                      TextSpan(
-                        text: 'Rua:  ',
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: data['logradouro'].toString(),
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const TextSpan(text: '\n'),
-                      TextSpan(
-                        text: 'Bairro:  ',
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: data['bairro'].toString(),
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const TextSpan(text: '\n'),
-                      TextSpan(
-                        text: 'Cidade:  ',
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: data['localidade'].toString(),
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const TextSpan(text: '\n'),
-                      TextSpan(
-                        text: 'Estado:  ',
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: data['uf'].toString(),
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const TextSpan(text: '          '),
-                      TextSpan(
-                        text: 'DDD:  ',
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: data['ddd'].toString(),
-                        style: GoogleFonts.openSans(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+          NavigationDestination(
+            icon: Icon(Icons.search),
+            label: 'Buscar Cep',
+            selectedIcon: Icon(
+              Icons.search,
+              color: Colors.blue,
             ),
           ),
-        ));
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: <Widget>[
+          Column(
+            children: [form],
+          ),
+          Column(
+            children: [search],
+          ),
+        ][currentPageIndex],
+      ),
+    );
   }
 }
