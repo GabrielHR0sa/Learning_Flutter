@@ -95,67 +95,70 @@ class _OneListPageState extends State<OneListPage> {
                     child: ListTile(
                       leading: const Icon(Icons.picture_as_pdf),
                       title: Text(file.name),
-                      subtitle: Text('${file.path} - $size'),
+                      subtitle: Text(
+                        'Tamanho: $size',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black54),
+                      ),
                       onTap: () {
                         showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) {
-                              return Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(25),
-                                      topRight: Radius.circular(25),
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) {
+                            return Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25),
+                                ),
+                              ),
+                              height: MediaQuery.of(context).size.height * 0.9,
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    color: Colors.teal,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.05,
+                                    width: double.infinity,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          icon: const Icon(
+                                            Icons.arrow_circle_left_outlined,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          file.name,
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        Container(
+                                          width: 20,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.9,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        color: Colors.teal,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                        width: double.infinity,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            IconButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              icon: const Icon(
-                                                Icons
-                                                    .arrow_circle_left_outlined,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              file.name,
-                                              style: const TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            Container(
-                                              width: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.85,
-                                          child: SfPdfViewer.file(
-                                              File(file.path!))),
-                                    ],
-                                  ));
-                            });
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.85,
+                                    child: SfPdfViewer.file(
+                                      File(file.path!),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                   );
