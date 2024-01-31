@@ -5,6 +5,7 @@ import 'package:pdf_handler_v1/src/home_page.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 List<dynamic> available = [];
+List<dynamic> list = [];
 final availableHeigth = AppBar().preferredSize.height;
 
 class OneListPage extends StatefulWidget {
@@ -15,6 +16,12 @@ class OneListPage extends StatefulWidget {
 }
 
 class _OneListPageState extends State<OneListPage> {
+  @override
+  void initState() {
+    super.initState();
+    list = available;
+  }
+
   //limpa a lista de pdfs exibidos ao sair dessa página
   @override
   void dispose() {
@@ -22,8 +29,20 @@ class _OneListPageState extends State<OneListPage> {
     super.dispose();
   }
 
+  _searchBy(String search) {
+    setState(() {
+      list = available
+          .where(
+            (element) =>
+                element.toString().toLowerCase().contains(search.toLowerCase()),
+          )
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final largura = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -33,84 +52,118 @@ class _OneListPageState extends State<OneListPage> {
           ),
         ),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height - availableHeigth,
-        width: MediaQuery.of(context).size.width,
-        child: ListView.builder(
-          itemCount: available.length,
-          itemBuilder: (context, index) {
-            final file = available[index];
-            final kb = file.size / 1024;
-            final mb = kb / 1024;
-            final size = (mb >= 1)
-                ? '${mb.toStringAsFixed(2)} MB'
-                : '${kb.toStringAsFixed(2)} KB';
-            return Card(
-              elevation: 5,
-              margin: const EdgeInsets.all(10),
-              child: ListTile(
-                leading: const Icon(Icons.picture_as_pdf),
-                title: Text(file.name),
-                subtitle: Text('${file.path} - $size'),
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) {
-                        return Container(
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25),
-                              ),
-                            ),
-                            height: MediaQuery.of(context).size.height * 0.9,
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  color: Colors.teal,
+      body: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: largura * 0.7,
+            height: 35,
+            child: TextFormField(
+              onChanged: (value) {
+                _searchBy(value);
+              },
+              cursorHeight: 20,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey,
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(width: 1, color: Colors.black),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                suffixIcon: const Icon(Icons.search),
+              ),
+            ),
+          ),
+          Expanded(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - availableHeigth,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  final file = list[index];
+                  final kb = file.size / 1024;
+                  final mb = kb / 1024;
+                  final size = (mb >= 1)
+                      ? '${mb.toStringAsFixed(2)} MB'
+                      : '${kb.toStringAsFixed(2)} KB';
+                  return Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      leading: const Icon(Icons.picture_as_pdf),
+                      title: Text(file.name),
+                      subtitle: Text('${file.path} - $size'),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              return Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(25),
+                                      topRight: Radius.circular(25),
+                                    ),
+                                  ),
                                   height:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                  width: double.infinity,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                      MediaQuery.of(context).size.height * 0.9,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        icon: const Icon(
-                                          Icons.arrow_circle_left_outlined,
-                                          color: Colors.white,
+                                      Container(
+                                        color: Colors.teal,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        width: double.infinity,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              icon: const Icon(
+                                                Icons
+                                                    .arrow_circle_left_outlined,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            Text(
+                                              file.name,
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            Container(
+                                              width: 20,
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        file.name,
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                      Container(
-                                        width: 20,
-                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.85,
+                                          child: SfPdfViewer.file(
+                                              File(file.path!))),
                                     ],
-                                  ),
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.85,
-                                    child: SfPdfViewer.file(File(file.path!))),
-                              ],
-                            ));
-                      });
+                                  ));
+                            });
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
