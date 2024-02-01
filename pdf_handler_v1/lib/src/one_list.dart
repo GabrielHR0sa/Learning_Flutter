@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 List<dynamic> available = [];
 List<dynamic> list = [];
+int oldIndex = 0;
 final availableHeigth = AppBar().preferredSize.height;
 
 class OneListPage extends StatefulWidget {
@@ -106,6 +107,18 @@ class _OneListPageState extends State<OneListPage> {
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
                           builder: (context) {
+                            /*verify() {
+                              if (oldIndex == index) {
+                                return SfPdfViewer.file(
+                                  File(file.path!),
+                                );
+                              } else {
+                                return SfPdfViewer.file(
+                                  File(list[index].path!),
+                                );
+                              }
+                            }*/
+
                             return Container(
                               decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.only(
@@ -141,19 +154,29 @@ class _OneListPageState extends State<OneListPage> {
                                           style: const TextStyle(
                                               color: Colors.white),
                                         ),
-                                        Container(
-                                          width: 20,
-                                        ),
+                                        /*IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              oldIndex = index;
+                                              index++;
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.chevron_right_rounded,
+                                            color: Colors.white,
+                                          ),
+                                        ),*/
                                       ],
                                     ),
                                   ),
                                   SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.85,
-                                    child: SfPdfViewer.file(
-                                      File(file.path!),
-                                    ),
-                                  ),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.85,
+                                      child: SfPdfViewer.file(
+                                        File(file.path!),
+                                      ) //verify(),
+                                      ),
                                 ],
                               ),
                             );
